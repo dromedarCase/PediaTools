@@ -11,34 +11,48 @@ print ("Wikipedia language:", language)
 
 url = "http://"+language+".wikipedia.org/wiki/Category:"+category
 print ("URL:", url)
-categoryPage = urllib.request.urlopen(url)
+print ()
 
-content = str(categoryPage.read())
+while url.find(" ") == -1:
+    categoryPage = urllib.request.urlopen(url)
 
-mainContentBegin = content.find("mw-pages")
-mainContendEnd = content.find("<noscript>", mainContentBegin)
-mainContent = content[mainContentBegin:mainContendEnd]
+    content = str(categoryPage.read())
 
-items = []
+    mainContentBegin = content.find("mw-pages")
+    mainContendEnd = content.find("<noscript>", mainContentBegin)
+    mainContent = content[mainContentBegin:mainContendEnd]
 
-ulBegin = mainContent.find("<ul>") + 4
-while ulBegin != 3:
-    ulEnd = mainContent.find("</ul>", ulBegin)
+    items = []
 
-    ul = mainContent[ulBegin:ulEnd]
+    ulBegin = mainContent.find("<ul>") + 4
+    while ulBegin != 3:
+        ulEnd = mainContent.find("</ul>", ulBegin)
 
-    subitems = []
-    pointer = 1
+        ul = mainContent[ulBegin:ulEnd]
 
-    pointer = ul.find('href="', pointer) + 6
-    while pointer != 5:
-        end = ul.find('"', pointer)
-        subitems.append(ul[pointer:end])
+        subitems = []
+        pointer = 1
+
         pointer = ul.find('href="', pointer) + 6
-    
-    items.extend(subitems)
-    ulBegin = mainContent.find("<ul>", ulBegin) + 4
-     
-print()
-for item in items:
-    print (item)
+        while pointer != 5:
+            end = ul.find('"', pointer)
+            subitems.append(ul[pointer:end])
+            pointer = ul.find('href="', pointer) + 6
+        
+        items.extend(subitems)
+        ulBegin = mainContent.find("<ul>", ulBegin) + 4
+        
+    for item in items:
+        print (item)
+        
+    # looking for next page
+
+    pointer = mainContent.find(") (") + 3
+    end = mainContent.find(")", pointer)
+    link = mainContent[pointer:end]
+
+    pointer = link.find('href="') + 6
+    end = link.find('#', pointer)
+    link = link[pointer:end].replace("&amp;","&")
+
+    url = "http://"+language+".wikipedia.org"+link
