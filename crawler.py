@@ -15,20 +15,30 @@ categoryPage = urllib.request.urlopen(url)
 
 content = str(categoryPage.read())
 
-ulBegin = content.find("<ul>", content.find("<ul>") + 1) + 4
-ulEnd = content.find("</ul>", ulBegin)
-
-ul = content[ulBegin:ulEnd]
+mainContentBegin = content.find("mw-pages")
+mainContendEnd = content.find("<noscript>", mainContentBegin)
+mainContent = content[mainContentBegin:mainContendEnd]
 
 items = []
-pointer = 1
 
-while True:
-    pointer = ul.find('">', pointer) + 2
-    if pointer == 1:
-        break
-    end = ul.find('<', pointer)
+ulBegin = mainContent.find("<ul>") + 4
+while ulBegin != 3:
+    ulEnd = mainContent.find("</ul>", ulBegin)
+
+    ul = mainContent[ulBegin:ulEnd]
+
+    subitems = []
+    pointer = 1
+
+    pointer = ul.find('href="', pointer) + 6
+    while pointer != 5:
+        end = ul.find('"', pointer)
+        subitems.append(ul[pointer:end])
+        pointer = ul.find('href="', pointer) + 6
     
-    items.append(ul[pointer:end])
-    
-print (str(items));
+    items.extend(subitems)
+    ulBegin = mainContent.find("<ul>", ulBegin) + 4
+     
+print()
+for item in items:
+    print (item)
