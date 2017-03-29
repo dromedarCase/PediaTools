@@ -6,12 +6,12 @@ import urllib.request
 category = sys.argv[1]
 language = sys.argv[2]
 
-print ("Crawling category:", category)
-print ("Wikipedia language:", language)
+print ("Crawling category:", category, file=sys.stderr)
+print ("Wikipedia language:", language, file=sys.stderr)
 
 url = "http://"+language+".wikipedia.org/wiki/Category:"+category
-print ("URL:", url)
-print ()
+print ("URL:", url, file=sys.stderr)
+print (file=sys.stderr)
 
 while url.find(" ") == -1:
     categoryPage = urllib.request.urlopen(url)
