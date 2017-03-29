@@ -20,4 +20,15 @@ ulEnd = content.find("</ul>", ulBegin)
 
 ul = content[ulBegin:ulEnd]
 
-print (ul)
+items = []
+pointer = 1
+
+while True:
+    pointer = ul.find('">', pointer) + 2
+    if pointer == 1:
+        break
+    end = ul.find('<', pointer)
+    
+    items.append(ul[pointer:end])
+    
+print (str(items));
